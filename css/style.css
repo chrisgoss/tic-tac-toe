@@ -1,3 +1,166 @@
-h1 {
-  color: purple;
+/*css-tricks article "pseudo class selectors"*/
+*, *::after, *::before {
+  box-sizing: border-box;
 }
+h1 {
+    text-align: center;
+    font-size: 4em;
+}
+:root {
+  --cell-size: 100px;
+/*to easily make the mark take up an attractive amount of the space within each cell*/
+  --mark-size: calc(var(--cell-size) * .9);
+}
+body {
+  margin: 0;
+/*gotta leave it like this or else the boxes are smashed vert*/
+}
+.board {
+  width: 100vw;
+  height: 50vh;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: repeat(3, auto)
+}
+.cell {
+  /*cell size already stated in :root*/
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 3px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+
+
+
+
+/*counting the cells over from 0, rows repeat at 3*/
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3) {
+  border-top: none;
+}
+/*ie third number cell plus one--the second row, first cell*/
+.cell:nth-child(3n + 1) {
+  border-left: none;
+}
+.cell:nth-child(3n + 3) {
+  border-right: none;
+}
+.cell:last-child,
+.cell:nth-child(8),
+.cell:nth-child(7) {
+  border-bottom: none;
+}
+
+
+
+
+
+.cell.x,
+.cell.circle {
+  cursor: not-allowed;
+/*see also W3S "use strict"*/
+}
+.cell.x::before,
+.cell.x::after,
+.cell.circle::before {
+  background-color: black;
+}
+/*messy lazy before/afters, find way to DRY, looks like shit*/
+.board.x .cell:not(.x):not(.circle):hover::before,
+.board.x .cell:not(.x):not(.circle):hover::after,
+.board.circle .cell:not(.x):not(.circle):hover::before {
+  background-color: lightgrey;
+}
+
+
+
+
+
+.cell.x::before,
+.cell.x::after,
+.board.x .cell:not(.x):not(.circle):hover::before,
+.board.x .cell:not(.x):not(.circle):hover::after {
+  content: '';
+  position: absolute;
+  width: calc(var(--mark-size) * .15);
+  height: var(--mark-size);
+}
+/*to make the X shape, like in the dancing robot prework*/
+.cell.x::before,
+.board.x .cell:not(.x):not(.circle):hover::before {
+  transform: rotate(45deg);
+}
+.cell.x::after,
+.board.x .cell:not(.x):not(.circle):hover::after {
+  transform: rotate(-45deg);
+}
+
+
+
+
+
+.cell.circle::before,
+.cell.circle::after,
+.board.circle .cell:not(.x):not(.circle):hover::before,
+.board.circle .cell:not(.x):not(.circle):hover::after {
+  content: '';
+  position: absolute;
+  border-radius:50%;
+}
+.cell.circle::before,
+.board.circle .cell:not(.x):not(.circle):hover::before {
+  width: var(--mark-size);
+  height: var(--mark-size);
+}
+/*actually an opaque circle on top, not a transparent circle*/
+.cell.circle::after,
+.board.circle .cell:not(.x):not(.circle):hover::after {
+/*adjust smaller circle size to create the "0" effect via layering*/
+  width: calc(var(--mark-size) * .7);
+  height: calc(var(--mark-size) * .7);
+  background-color: white;
+}
+
+
+
+
+
+/*popup message*/
+.winning-message {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: center;
+  color: crimson;
+  font-size: 5rem;
+  flex-direction: column;
+}
+/*avoid px, use em for text, rem more universal relative to page text*/
+.winning-message button {
+  font-size: 3rem;
+  background-color: white;
+  border: 3px solid black;
+  cursor: pointer;
+}
+.winning-message button:hover {
+  background-color: black;
+  color: white;
+  border-color: white;
+}
+.winning-message.show {
+  display: flex;
+}
+/*add themed styling later*/
